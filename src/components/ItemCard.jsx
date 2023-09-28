@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SellMeContext } from "../context/SellMeContext";
 
-export default function ItemCard({ item }) {
+export default function ItemCard({ item, navigation }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [showSizes, setShowSizes] = useState(false);
+  const [showProceedButton, setShowProceedButton] = useState(false);
+  const {
+    currentShirt,
+    currentPants,
+    currentShoes,
+    setCurrentPants,
+    setCurrentShirt,
+    setCurrentShoes,
+    setCurrentSet,
+  } = useContext(SellMeContext);
 
   const toggleSizes = () => {
     setShowSizes(!showSizes);
@@ -14,36 +25,78 @@ export default function ItemCard({ item }) {
     setSelectedColor(color);
     setSelectedSize(null);
     toggleSizes();
+    setShowProceedButton(false); // Reset the button visibility
   };
 
   const handleSizePress = (size) => {
     setSelectedSize(size);
+    setShowProceedButton(true); // Show the button when size is selected
+  };
+
+  useEffect(() => {
+    if (currentShoes && currentPants && currentShirt) {
+      const newSet = {
+        currentShoes,
+        currentPants,
+        currentShirt,
+      };
+      setCurrentSet(newSet);
+    }
+  }, [currentShoes, currentPants, currentShirt]);
+
+  const handleProceedPress = () => {
+    const selectedItem = { item, selectedColor, selectedSize };
+
+    switch (item.type) {
+      case "shoes":
+        setCurrentShoes(selectedItem);
+        break;
+      case "pants":
+        setCurrentPants(selectedItem);
+        break;
+      case "shirt":
+        setCurrentShirt(selectedItem);
+        break;
+      default:
+        break;
+    }
+
+    navigation.navigate("Home");
+    setShowSizes(false);
+    setShowProceedButton(false);
+    setSelectedColor(null);
   };
 
   return (
-    <View style={{ 
-      backgroundColor: '#fff',
-      borderRadius: 10,
-      padding: 20,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-      width: '85%',
-      marginRight: 'auto',
-      marginLeft: 'auto',
-      margin: 15
-    }}>
-      <Text style={{ 
-        fontSize: 18, 
-        fontWeight: 'bold', 
-        marginBottom: 10,
-      }}>{item.brand} - {item.name}</Text>
-      <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+    <View
+      style={{
+        backgroundColor: "whitesmoke",
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        width: "85%",
+        marginRight: "auto",
+        marginLeft: "auto",
+        margin: 15,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 10,
+        }}
+      >
+        {item.brand} - {item.name}
+      </Text>
+      <View style={{ flexDirection: "row", marginBottom: 10 }}>
         {item.colors.map((color, index) => (
           <TouchableOpacity
             key={index}
@@ -54,7 +107,7 @@ export default function ItemCard({ item }) {
               marginRight: 10,
               backgroundColor: color,
               borderWidth: 2,
-              borderColor: selectedColor === color ? '#000' : 'transparent'
+              borderColor: selectedColor === color ? "#000" : "transparent",
             }}
             onPress={() => handleColorPress(color)}
           />
@@ -62,21 +115,25 @@ export default function ItemCard({ item }) {
       </View>
       {showSizes && (
         <View>
-          <Text style={{ 
-            fontSize: 16, 
-            fontWeight: 'bold', 
-            marginBottom: 10,
-          }}>Available Sizes:</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              marginBottom: 10,
+            }}
+          >
+            Available Sizes:
+          </Text>
           {item.sizes.map((size, index) => (
             <TouchableOpacity
               key={index}
               style={{
                 borderWidth: 2,
-                borderColor: selectedSize === size ? '#000' : 'transparent',
+                borderColor: selectedSize === size ? "#000" : "transparent",
                 marginBottom: 5,
                 paddingVertical: 8,
                 paddingHorizontal: 12,
-                borderRadius: 5
+                borderRadius: 5,
               }}
               onPress={() => handleSizePress(size)}
             >
@@ -84,6 +141,20 @@ export default function ItemCard({ item }) {
             </TouchableOpacity>
           ))}
         </View>
+      )}
+      {showProceedButton && (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#007BFF",
+            padding: 10,
+            borderRadius: 5,
+            alignItems: "center",
+            marginTop: 10,
+          }}
+          onPress={handleProceedPress}
+        >
+          <Text style={{ color: "#fff", fontSize: 16 }}>Proceed</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
