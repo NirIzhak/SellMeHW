@@ -5,10 +5,14 @@ export const SellMeContext = createContext();
 
 export default function SellMeContextProvider({ children }) {
   const [data, setData] = useState({});
-  const [currentCart, setCurrentCart] = useState({});
+  const [currentShoes, setCurrentShoes] = useState(null);
+  const [currentPants, setCurrentPants] = useState(null);
+  const [currentShirt, setCurrentShirt] = useState(null);
+  const [currentSet, setCurrentSet] = useState([]);
   const [allShoes, setAllShoes] = useState({});
   const [allPants, setAllPants] = useState({});
   const [allShirts, setAllShirts] = useState({});
+  const [allSets, setAllSets] = useState([]);
 
   const LoadItems = async () => {
     try {
@@ -29,11 +33,19 @@ export default function SellMeContextProvider({ children }) {
 
   const value = {
     data,
-    setCurrentCart,
-    currentCart,
     allPants,
     allShirts,
     allShoes,
+    currentPants,
+    currentShirt,
+    currentShoes,
+    currentSet,
+    allSets,
+    setCurrentPants,
+    setCurrentShirt,
+    setCurrentShoes,
+    setCurrentSet,
+    setAllSets
   };
   return (
     <SellMeContext.Provider value={value}>{children}</SellMeContext.Provider>
