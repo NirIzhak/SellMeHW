@@ -1,10 +1,15 @@
-import { View, Text, SafeAreaView, StyleSheet, FlatList } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { View, Text, SafeAreaView, StyleSheet, FlatList, TextInput } from "react-native";
 import { SellMeContext } from "../context/SellMeContext";
 import ItemCard from "../components/ItemCard";
 
-export default function ShoesScreen({ navigation }) {
+export default function ShirtsScreen({ navigation }) {
   const { allShirts } = useContext(SellMeContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredShirts = allShirts.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.brand.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,15 +30,21 @@ export default function ShoesScreen({ navigation }) {
           fontSize: 20,
         }}
       >
-        פריטים זמינים = {allShirts.length}
+        פריטים זמינים = {filteredShirts.length}
       </Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search..."
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+      />
       <FlatList
-        data={allShirts}
+        data={filteredShirts}
         renderItem={({ item }) => (
           <ItemCard item={item} navigation={navigation} />
         )}
         keyExtractor={(item, index) => index.toString()}
-        style={{ marginTop: 30 }}
+        style={{ marginTop: 10 }}
       />
     </SafeAreaView>
   );
@@ -42,6 +53,13 @@ export default function ShoesScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 10,
+    paddingLeft: 10,
   },
   itemContainer: {
     display: "flex",
