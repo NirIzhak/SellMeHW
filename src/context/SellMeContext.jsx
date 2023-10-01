@@ -45,7 +45,7 @@ export default function SellMeContextProvider({ children }) {
     setCurrentShirt,
     setCurrentShoes,
     setCurrentSet,
-    setAllSets
+    setAllSets,
   };
   return (
     <SellMeContext.Provider value={value}>{children}</SellMeContext.Provider>
