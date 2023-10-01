@@ -25,12 +25,12 @@ export default function ItemCard({ item, navigation }) {
     setSelectedColor(color);
     setSelectedSize(null);
     toggleSizes();
-    setShowProceedButton(false); // Reset the button visibility
+    setShowProceedButton(false);
   };
 
   const handleSizePress = (size) => {
     setSelectedSize(size);
-    setShowProceedButton(true); // Show the button when size is selected
+    setShowProceedButton(true);
   };
 
   useEffect(() => {
@@ -153,7 +153,7 @@ export default function ItemCard({ item, navigation }) {
           }}
           onPress={handleProceedPress}
         >
-          <Text style={{ color: "#fff", fontSize: 16 }}>Proceed</Text>
+          <Text style={{ color: "#fff", fontSize: 16 }}>בחירה</Text>
         </TouchableOpacity>
       )}
     </View>

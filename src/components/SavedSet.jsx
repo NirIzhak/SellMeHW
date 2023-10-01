@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet} from "react-native";
+import { View, Text, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
 
 export default function SavedSet({ item }) {
@@ -65,17 +65,15 @@ export default function SavedSet({ item }) {
   );
 }
 
-
 const styles = StyleSheet.create({
-    miniTitle: {
-      fontSize: 18,
-      fontWeight: '500',
-      marginBottom: 5,
-      marginTop: 5,
-      textDecorationLine: 'underline'
-    },
-    itemContainer: {
-      display: "flex",
-    },
-  });
-  
+  miniTitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginBottom: 5,
+    marginTop: 5,
+    textDecorationLine: "underline",
+  },
+  itemContainer: {
+    display: "flex",
+  },
+});
