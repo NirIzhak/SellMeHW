@@ -7,10 +7,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Clipboard,
+  LogBox,
 } from "react-native";
 import { SellMeContext } from "../context/SellMeContext";
 import Modal from "react-native-modal";
-
+import ClipboardToast from "react-native-clipboard-toast";
+LogBox.ignoreAllLogs(true);
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -18,7 +21,6 @@ const HomeScreen = ({ navigation }) => {
     currentPants,
     currentShirt,
     currentSet,
-    setAllSets,
     allSets,
     setCurrentPants,
     setCurrentShirt,
@@ -26,10 +28,39 @@ const HomeScreen = ({ navigation }) => {
   } = useContext(SellMeContext);
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [copiedText, setCopiedText] = useState("");
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setCopiedText(text);
+  };
+
+  const textToCopy =
+    currentPants && currentShirt && currentShoes
+      ? `
+Sheos
+${currentShoes.item.name} - ${currentShoes.item.brand}
+
+Selected Color:
+Size: ${currentShoes.selectedSize}
+
+Pants
+${currentPants.item.name} - ${currentPants.item.brand}
+
+Selected Color:
+Size: ${currentPants.selectedSize}
+
+Shirt
+${currentShirt.item.name} - ${currentShirt.item.brand}
+
+Selected Color:
+Size: ${currentShirt.selectedSize}
+`
+      : "";
 
   return (
     <SafeAreaView
@@ -135,89 +166,123 @@ const HomeScreen = ({ navigation }) => {
       </View>
       {currentPants && currentShirt && currentShoes && (
         <>
-        <TouchableOpacity
-          style={{ marginTop: 150 }}
-          onPress={() => {
-            setModalVisible(true); // Open the modal
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 26,
-              borderColor: "green",
-              borderWidth: 1,
-              borderRadius: 3,
-              padding: 10,
+          <TouchableOpacity
+            style={{ marginTop: 150 }}
+            onPress={() => {
+              setModalVisible(true); // Open the modal
             }}
           >
-            שמור סט
-          </Text>
-        </TouchableOpacity>
-        <Modal style={{backgroundColor: 'whitesmoke', borderRadius: 9, marginTop: 145, marginBottom: 145}} isVisible={isModalVisible}>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}>
-        <Text style={{marginTop: 15}}>Sheos</Text>
-        <Text>
-          {currentShoes.item.name} - {currentShoes.item.brand}
-        </Text>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <Text>Selected Color:</Text>
-          <Text
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 26,
+                borderColor: "green",
+                borderWidth: 1,
+                borderRadius: 3,
+                padding: 10,
+              }}
+            >
+              שמור סט
+            </Text>
+          </TouchableOpacity>
+          <Modal
             style={{
-              backgroundColor: currentShoes.selectedColor,
-              width: "10%",
+              backgroundColor: "whitesmoke",
+              borderRadius: 9,
+              marginTop: 145,
+              marginBottom: 145,
             }}
-          ></Text>
-        </View>
-        <Text>Size: {currentShoes.selectedSize}</Text>
-        <Text style={{marginTop: 15}}>Pants</Text>
-        <Text>
-          {currentPants.item.name} - {currentPants.item.brand}
-        </Text>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <Text>Selected Color:</Text>
-          <Text
-            style={{
-              backgroundColor: currentPants.selectedColor,
-              width: "10%",
-            }}
-          ></Text>
-        </View>
-        <Text>Size: {currentPants.selectedSize}</Text>
-        <Text style={{marginTop: 15}}>Shirt</Text>
-        <Text>
-          {currentShirt.item.name} - {currentShirt.item.brand}
-        </Text>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <Text>Selected Color:</Text>
-          <Text
-            style={{
-              backgroundColor: currentShirt.selectedColor,
-              width: "10%",
-            }}
-          ></Text>
-        </View>
-        <Text>Size: {currentShirt.selectedSize}</Text>
+            isVisible={isModalVisible}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ marginTop: 15 }}>Sheos</Text>
+              <Text>
+                {currentShoes.item.name} - {currentShoes.item.brand}
+              </Text>
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <Text>Selected Color:</Text>
+                <Text
+                  style={{
+                    backgroundColor: currentShoes.selectedColor,
+                    width: "10%",
+                  }}
+                ></Text>
+              </View>
+              <Text>Size: {currentShoes.selectedSize}</Text>
+              <Text style={{ marginTop: 15 }}>Pants</Text>
+              <Text>
+                {currentPants.item.name} - {currentPants.item.brand}
+              </Text>
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <Text>Selected Color:</Text>
+                <Text
+                  style={{
+                    backgroundColor: currentPants.selectedColor,
+                    width: "10%",
+                  }}
+                ></Text>
+              </View>
+              <Text>Size: {currentPants.selectedSize}</Text>
+              <Text style={{ marginTop: 15 }}>Shirt</Text>
+              <Text>
+                {currentShirt.item.name} - {currentShirt.item.brand}
+              </Text>
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <Text>Selected Color:</Text>
+                <Text
+                  style={{
+                    backgroundColor: currentShirt.selectedColor,
+                    width: "10%",
+                  }}
+                ></Text>
+              </View>
+              <Text>Size: {currentShirt.selectedSize}</Text>
 
-
-          <View style={{display: 'flex', flexDirection: 'row', marginTop: 200, justifyContent:'space-evenly', width:'100%'}}>
-          <Button title="שמור סט" onPress={() => {
-            allSets.push(currentSet);
-            setCurrentShoes(null);
-            setCurrentPants(null);
-            setCurrentShirt(null);
-            navigation.navigate("Sets");
-            toggleModal(); 
-          }} />
-          <Button title="ביטול" onPress={toggleModal} />
-          <Button title="העתק" onPress={()=>{console.log("dsa")}} />
-          </View>
-        </View>
-      </Modal>
-</>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginTop: 200,
+                  justifyContent: "space-evenly",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  color="blue"
+                  title="שמור סט"
+                  onPress={() => {
+                    allSets.push(currentSet);
+                    setCurrentShoes(null);
+                    setCurrentPants(null);
+                    setCurrentShirt(null);
+                    navigation.navigate("Sets");
+                    toggleModal();
+                  }}
+                />
+                <Button title="ביטול" onPress={toggleModal} color="blue" />
+                <ClipboardToast
+                  textToShow={"העתק"}
+                  textToCopy={textToCopy}
+                  toastText={"Text copied to clipboard!"}
+                  textStyle={{ color: "blue", fontSize: 17 }}
+                  id={"resular"}
+                  accessibilityLabel={"click me to copy"}
+                  toastOnShow={fetchCopiedText}
+                  toastDuration={2000}
+                  delay={500}
+                />
+              </View>
+            </View>
+          </Modal>
+        </>
       )}
-
-      
     </SafeAreaView>
   );
 };
