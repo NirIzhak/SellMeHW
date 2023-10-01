@@ -1,14 +1,22 @@
 import React, { useContext, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, FlatList, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  TextInput,
+} from "react-native";
 import { SellMeContext } from "../context/SellMeContext";
 import ItemCard from "../components/ItemCard";
 
 export default function ShoesScreen({ navigation }) {
   const { allShoes } = useContext(SellMeContext);
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredShoes = allShoes.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.brand.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredShoes = allShoes.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -56,7 +64,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     margin: 10,
     paddingLeft: 10,

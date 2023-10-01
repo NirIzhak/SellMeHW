@@ -11,7 +11,6 @@ import SavedSet from "../components/SavedSet";
 
 export default function SetsScreens({ navigation }) {
   const { allSets } = useContext(SellMeContext);
-  console.log(allSets);
   return (
     <SafeAreaView>
       <Text
